@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My project</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="/" class="fa fa-home"> My project</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="/doc/faq.html">
+                                FAQ
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="https://example.com">
+                                Another link
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="/">My project</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <p>Couscous generates a <a href="http://pages.github.com/">GitHub pages</a> website from your markdown documentation.</p>
+<p><a href="https://travis-ci.org/CouscousPHP/Couscous"><img src="https://travis-ci.org/CouscousPHP/Couscous.svg?branch=master" alt="Build Status" /></a>
+<a href="https://scrutinizer-ci.com/g/CouscousPHP/Couscous/?branch=master"><img src="https://scrutinizer-ci.com/g/CouscousPHP/Couscous/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality" /></a>
+<a href="https://scrutinizer-ci.com/g/CouscousPHP/Couscous/?branch=master"><img src="https://scrutinizer-ci.com/g/CouscousPHP/Couscous/badges/coverage.png?b=master" alt="Code Coverage" /></a>
+<a href="http://isitmaintained.com/project/CouscousPHP/Couscous" title="Average time to resolve an issue"><img src="http://isitmaintained.com/badge/resolution/CouscousPHP/Couscous.svg" alt="Average time to resolve an issue" /></a>
+<a href="http://isitmaintained.com/project/CouscousPHP/Couscous" title="Percentage of issues still open"><img src="http://isitmaintained.com/badge/open/CouscousPHP/Couscous.svg" alt="Percentage of issues still open" /></a></p>
+<p><a href="https://gitter.im/CouscousPHP/Couscous"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter" /></a></p>
+<p><strong>Everything is documented on <a href="http://couscous.io/">couscous.io</a>.</strong></p>
+<p>What follows is the documentation for contributors.</p>
+<h2 id="how-couscous-works">How Couscous works?</h2>
+<p>Couscous was designed to be as simple as possible. By embracing simplicity, it becomes extremely simple to extend.</p>
+<h3 id="website-generation">Website generation</h3>
+<p>The website generation is composed of a list of <strong>steps</strong> to process the <code>Project</code> model object:</p>
+<pre><code class="language-php">interface Step
+{
+    /**
+     * Process the given project.
+     *
+     * @param Project $project
+     */
+    public function __invoke(Project $project);
+}</code></pre>
+<p>Steps are very granular, thus extremely easy to write and test. For example:</p>
+<ul>
+<li><code>LoadConfig</code>: loads the <code>couscous.yml</code> config file</li>
+<li><code>RunBowerInstall</code></li>
+<li><code>LoadMarkdownFiles</code>: load the content of all the <code>*.md</code> files in memory</li>
+<li><code>RenderMarkdown</code>: render the markdown content</li>
+<li><code>WriteFiles</code>: write the in-memory processed files to the target directory</li>
+<li>…</li>
+</ul>
+<p>For example, here is a step that would preprocess Markdown files to put the word &quot;Couscous&quot; in bold:</p>
+<pre><code class="language-php">class PutCouscousInBold implements \Couscous\Step
+{
+    public function __invoke(Project $project)
+    {
+        /** @var MarkdownFile[] $markdownFiles */
+        $markdownFiles = $project-&gt;findFilesByType('Couscous\Model\MarkdownFile');
+
+        foreach ($markdownFiles as $file) {
+            $file-&gt;content = str_replace('Couscous', '**Couscous**', $file-&gt;content);
+        }
+    }
+}</code></pre>
+<p>Couscous uses <a href="http://php-di.org/">PHP-DI</a> for wiring everything together with dependency injection.</p>
+<p>The full list of steps is configured in <a href="src/Application/config.php"><code>src/Application/config.php</code></a>.</p>
+<h3 id="website-deployment">Website deployment</h3>
+<p>Couscous deploys by cloning (in a temp directory) the current repository, checking out the <code>gh-pages</code> branch, generating the website inside it, committing and pushing.</p>
+<p>In the future, Couscous will support several deployment strategies.</p>
+<h2 id="contributing">Contributing</h2>
+<p>See the <a href="contributing.html">CONTRIBUTING</a> file.</p>
+<h2 id="license">License</h2>
+<p>Couscous is released under the MIT License.</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find My project on <a href="https://github.com/lianhub/test">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+        <!-- Livereload -->
+        <script>
+            document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+                    ':35729/livereload.js?snipver=1"></' + 'script>')
+        </script>
+        <!-- End Livereload -->
+    </body>
+</html>
